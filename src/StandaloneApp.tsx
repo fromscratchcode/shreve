@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 
 import ScriptWorkspace from "./ScriptWorkspace";
 import "./standalone.css";
@@ -26,14 +28,23 @@ const StandaloneApp = () => {
       <div className="standaloneToolbar">
         <div className="standaloneBrand">
           <h1 className="standaloneTitle">Shreve</h1>
-          <p className="standaloneTagline">Script mode scaffold</p>
+          <a
+            className="standaloneLearnMore"
+            href="https://fromscratchcode.com/memphis/"
+          >
+            Learn more
+          </a>
         </div>
         <button
           type="button"
           className="themeToggle"
           onClick={() => setDarkMode((current) => !current)}
         >
-          {darkMode ? "Light" : "Dark"}
+          <FontAwesomeIcon
+            icon={darkMode ? faSun : faMoon}
+            className="themeToggleIcon"
+            aria-hidden="true"
+          />
         </button>
       </div>
       <div className="standaloneAppFrame">

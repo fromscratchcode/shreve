@@ -12,6 +12,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/react-fontawesome": "^3.3.1",
     "@codemirror/commands": "^6.10.3",
     "@codemirror/lang-python": "^6.2.1",
     "@codemirror/language": "^6.12.3",

@@ -66,11 +66,15 @@ body {
   color: #f3f6fa;
 }
 
-.standaloneTagline {
-  margin: 0;
+.standaloneLearnMore {
   color: var(--theme-dark-blue);
   font-size: 0.875rem;
   font-weight: 600;
+  text-decoration: none;
+}
+
+.standaloneLearnMore:hover {
+  text-decoration: underline;
 }
 
 .themeToggle {
@@ -83,14 +87,18 @@ body {
   color: var(--theme-dark-blue);
   cursor: pointer;
   font: inherit;
-  font-size: 0.875rem;
-  font-weight: 600;
   line-height: 1;
-  padding: 0.55rem 0.85rem;
+  padding: 0.55rem;
   transition:
     background 0.15s ease,
     color 0.15s ease,
     border-color 0.15s ease;
+}
+
+.themeToggleIcon {
+  height: 1em;
+  font-size: 1rem;
+  vertical-align: -0.125em;
 }
 
 .themeToggle:hover {
@@ -105,6 +113,10 @@ body {
 
 .standaloneShellDark .themeToggle:hover {
   background: rgba(4, 96, 189, 0.14);
+}
+
+.standaloneShellDark .standaloneLearnMore {
+  color: var(--theme-dark-blue);
 }
 
 .standaloneAppFrame {
