@@ -1,0 +1,132 @@
+:root {
+  color-scheme: light dark;
+  --theme-dark-blue: #0460bd;
+  --console-bg: #f7fbff;
+  --console-fg: #102a43;
+  --console-dark-bg: #101820;
+  --console-dark-fg: #d9ecff;
+  --corner: 18px;
+}
+
+body {
+  background: #f4f7fb;
+}
+
+#root {
+  min-height: 100%;
+}
+
+.standaloneShell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: #f4f7fb;
+  color: #000;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.standaloneShellDark {
+  background: #141c24;
+  color: var(--theme-dark-blue);
+}
+
+.standaloneToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  max-width: 2400px;
+  margin: 0 auto 0.75rem;
+}
+
+.standaloneBrand {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.standaloneTitle {
+  margin: 0;
+  color: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.standaloneShellDark .standaloneTitle {
+  color: #f3f6fa;
+}
+
+.standaloneTagline {
+  margin: 0;
+  color: var(--theme-dark-blue);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.themeToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--theme-dark-blue);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--theme-dark-blue);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.55rem 0.85rem;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.themeToggle:hover {
+  background: #eff6ff;
+}
+
+.standaloneShellDark .themeToggle {
+  border-color: var(--theme-dark-blue);
+  background: rgba(16, 16, 16, 0.88);
+  color: var(--theme-dark-blue);
+}
+
+.standaloneShellDark .themeToggle:hover {
+  background: rgba(4, 96, 189, 0.14);
+}
+
+.standaloneAppFrame {
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 1024px) {
+  .standaloneShell {
+    height: auto;
+  }
+
+  .standaloneAppFrame {
+    height: auto;
+    min-height: calc(100vh - 4.75rem);
+    min-height: calc(100dvh - 4.75rem);
+  }
+}
+
+@media (max-width: 720px) {
+  .standaloneToolbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}

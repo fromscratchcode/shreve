@@ -1,0 +1,35 @@
+.consoleBox {
+  flex: 1;
+  min-height: 0;
+  background: var(--console-bg);
+  color: var(--console-fg);
+  border: 1px solid var(--theme-dark-blue);
+  border-radius: var(--corner) !important;
+  box-shadow: 0 8px 24px rgba(4, 96, 189, 0.08);
+}
+
+.darkMode {
+  background: var(--console-dark-bg);
+  color: var(--console-dark-fg);
+  box-shadow: none;
+}
+
+.consoleOutput {
+  height: 100%;
+  box-sizing: border-box;
+  background: var(--console-bg) !important;
+  border-radius: var(--corner) !important;
+  font-family:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 1rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  padding: 0.75rem 1rem;
+  margin: 0;
+}
+
+.darkMode .consoleOutput {
+  background: var(--console-dark-bg) !important;
+  color: var(--console-dark-fg);
+}

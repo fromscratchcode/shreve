@@ -1,0 +1,20 @@
+.editor {
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editor :global(.cm-editor) {
+  height: 100%;
+  font-size: 1rem;
+}
+
+.editor :global(.cm-scroller) {
+  height: 100%;
+  min-height: 0;
+}
+
+.editor :global(.cm-content) {
+  tab-size: 4;
+}
