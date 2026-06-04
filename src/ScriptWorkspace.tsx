@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./App.css";
 import CodeEditor from "./CodeEditor";
 import Console from "./Console";
+import { getMemphis, hasMemphis } from "./memphis";
 
 const DEFAULT_CODE = `def greet(name):
     print(f"hello, {name}")
@@ -20,16 +21,24 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
     "Console output will appear here.",
   );
 
-  const handleRun = () => {
-    setConsoleOutput(
-      [
-        "Run requested.",
-        "Wasm execution hook not connected yet.",
-        "",
-        "Current source:",
-        code,
-      ].join("\n"),
-    );
+  useEffect(() => {
+    void getMemphis();
+  }, []);
+
+  const handleRun = async () => {
+    if (!hasMemphis()) {
+      setConsoleOutput("Initializing Memphis...");
+    }
+
+    try {
+      const memphis = await getMemphis();
+      const output = memphis.run(code);
+      setConsoleOutput(output || "Program completed with no output.");
+    } catch (error) {
+      setConsoleOutput(
+        error instanceof Error ? error.message : "Failed to run Memphis.",
+      );
+    }
   };
 
   return (
@@ -38,7 +47,11 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
         <div className={`editorPanel ${darkMode ? "editorPanelDark" : ""}`}>
           <div className="editorToolbar">
             <h2 className="panelTitle">Script</h2>
-            <button type="button" className="runButton" onClick={handleRun}>
+            <button
+              type="button"
+              className="runButton"
+              onClick={() => void handleRun()}
+            >
               Run
             </button>
           </div>
