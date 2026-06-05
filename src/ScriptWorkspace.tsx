@@ -46,7 +46,7 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
       <section className="column">
         <div className={`editorPanel ${darkMode ? "editorPanelDark" : ""}`}>
           <div className="editorToolbar">
-            <h2 className="panelTitle">Script</h2>
+            <h2 className="panelTitle">main.py</h2>
             <button
               type="button"
               className="runButton"
