@@ -26,7 +26,7 @@ export function lex(text: string): any;
 
 export function parse(text: string): any;
 
-export function run(_text: string): string;
+export function run(text: string): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 

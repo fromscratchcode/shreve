@@ -327,14 +327,14 @@ export function parse(text) {
 }
 
 /**
- * @param {string} _text
+ * @param {string} text
  * @returns {string}
  */
-export function run(_text) {
+export function run(text) {
     let deferred2_0;
     let deferred2_1;
     try {
-        const ptr0 = passStringToWasm0(_text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         const ret = wasm.run(ptr0, len0);
         deferred2_0 = ret[0];
