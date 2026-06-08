@@ -1,11 +1,14 @@
 .consoleBox {
+  display: flex;
   flex: 1;
   min-height: 0;
+  min-width: 0;
   background: var(--console-bg);
   color: var(--console-fg);
   border: 1px solid var(--theme-dark-blue);
   border-radius: var(--corner) !important;
   box-shadow: 0 8px 24px rgba(4, 96, 189, 0.08);
+  overflow: auto;
 }
 
 .darkMode {
@@ -15,7 +18,9 @@
 }
 
 .consoleOutput {
-  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  width: max-content;
   box-sizing: border-box;
   background: var(--console-bg) !important;
   border-radius: var(--corner) !important;
@@ -23,8 +28,7 @@
     "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 1rem;
   line-height: 1.5;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
+  white-space: pre;
   padding: 0.75rem 1rem;
   margin: 0;
 }

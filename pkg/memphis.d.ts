@@ -33,6 +33,10 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_wasmrepl_free: (a: number, b: number) => void;
+  readonly compile: (a: number, b: number) => [number, number, number];
+  readonly lex: (a: number, b: number) => any;
+  readonly parse: (a: number, b: number) => [number, number, number];
+  readonly run: (a: number, b: number) => [number, number];
   readonly wasmrepl_backspace: (a: number) => void;
   readonly wasmrepl_current_line: (a: number) => [number, number];
   readonly wasmrepl_cursor_index: (a: number) => number;
@@ -47,10 +51,6 @@ export interface InitOutput {
   readonly wasmrepl_prompt: (a: number) => [number, number];
   readonly wasmrepl_submit: (a: number) => any;
   readonly wasmrepl_version: (a: number) => [number, number];
-  readonly compile: (a: number, b: number) => [number, number, number];
-  readonly lex: (a: number, b: number) => any;
-  readonly parse: (a: number, b: number) => [number, number, number];
-  readonly run: (a: number, b: number) => [number, number];
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
