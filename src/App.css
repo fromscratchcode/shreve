@@ -98,9 +98,18 @@
 @media (max-width: 960px) {
   .workspace {
     grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1.2fr) minmax(0, 0.85fr);
   }
 
-  .column {
-    min-height: 24rem;
+  .editorColumn {
+    min-height: 0;
+  }
+
+  .consoleColumn {
+    min-height: 0;
+  }
+
+  .consolePanel {
+    height: 100%;
   }
 }

@@ -126,13 +126,12 @@ body {
 
 @media (max-width: 960px) {
   .standaloneShell {
-    height: auto;
+    overflow: hidden;
   }
 
   .standaloneAppFrame {
-    height: auto;
-    min-height: calc(100vh - 4.75rem);
-    min-height: calc(100dvh - 4.75rem);
+    min-height: 0;
+    overflow: hidden;
   }
 }
 

@@ -43,7 +43,7 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
 
   return (
     <div className="workspace">
-      <section className="column">
+      <section className="column editorColumn">
         <div className={`editorPanel ${darkMode ? "editorPanelDark" : ""}`}>
           <div className="editorToolbar">
             <h2 className="panelTitle">main.py</h2>
@@ -60,7 +60,7 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
           </div>
         </div>
       </section>
-      <section className="column">
+      <section className="column consoleColumn">
         <div className="consolePanel">
           <h2 className="consoleHeader">Console</h2>
           <Console output={consoleOutput} darkMode={darkMode} />
