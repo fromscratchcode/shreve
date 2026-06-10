@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faChevronUp,
+  faMoon,
+  faSun,
+} from "@fortawesome/free-solid-svg-icons";
 
 import ScriptWorkspace from "./ScriptWorkspace";
 import "./standalone.css";
@@ -8,8 +13,19 @@ import "./standalone.css";
 const getInitialDarkMode = (): boolean =>
   window.matchMedia("(prefers-color-scheme: dark)").matches;
 
+const getInitialReplOpen = (): boolean => false;
+
+const LazyTupelo = lazy(async () => {
+  await import("@fromscratchcode/tupelo/tupelo.css");
+  const module = await import("@fromscratchcode/tupelo");
+
+  return { default: module.Tupelo };
+});
+
 const StandaloneApp = () => {
   const [darkMode, setDarkMode] = useState(getInitialDarkMode);
+  const [replOpen, setReplOpen] = useState(getInitialReplOpen);
+  const [hasOpenedRepl, setHasOpenedRepl] = useState(getInitialReplOpen);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -22,6 +38,12 @@ const StandaloneApp = () => {
       mediaQuery.removeEventListener("change", handleChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (replOpen) {
+      setHasOpenedRepl(true);
+    }
+  }, [replOpen]);
 
   return (
     <div className={`standaloneShell ${darkMode ? "standaloneShellDark" : ""}`}>
@@ -48,7 +70,58 @@ const StandaloneApp = () => {
         </button>
       </div>
       <div className="standaloneAppFrame">
-        <ScriptWorkspace darkMode={darkMode} />
+        <div
+          className={`standaloneWorkspaceShell ${
+            replOpen ? "standaloneWorkspaceShellReplOpen" : ""
+          }`}
+        >
+          <div className="standalonePrimaryWorkspace">
+            <ScriptWorkspace darkMode={darkMode} />
+          </div>
+          <section
+            className={`standaloneReplPane ${
+              replOpen ? "standaloneReplPaneOpen" : "standaloneReplPaneClosed"
+            }`}
+            aria-label="Interactive Prompt"
+          >
+            <button
+              type="button"
+              className="standaloneReplToggle"
+              onClick={() => setReplOpen((current) => !current)}
+              aria-expanded={replOpen}
+              aria-controls="standalone-repl-content"
+            >
+              <span className="standaloneReplTitle">Interactive Prompt</span>
+              <span className="standaloneReplToggleLabel">
+                {replOpen ? "Minimize" : "Open"}
+              </span>
+              <FontAwesomeIcon
+                icon={replOpen ? faChevronDown : faChevronUp}
+                className="standaloneReplToggleIcon"
+                aria-hidden="true"
+              />
+            </button>
+            <div
+              id="standalone-repl-content"
+              className="standaloneReplContent"
+              hidden={!replOpen}
+            >
+              <div className="standaloneReplBody">
+                {hasOpenedRepl ? (
+                  <Suspense
+                    fallback={
+                      <div className="standaloneReplLoading">
+                        Loading interactive prompt...
+                      </div>
+                    }
+                  >
+                    <LazyTupelo className="standaloneTupelo" />
+                  </Suspense>
+                ) : null}
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );
