@@ -51,28 +51,110 @@
   letter-spacing: 0.08em;
 }
 
-.runButton {
+.toolbarIdentity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.runButton,
+.inspectButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   border: 1px solid var(--theme-dark-blue);
   border-radius: 999px;
-  background: var(--theme-dark-blue);
-  color: #fff;
   cursor: pointer;
   font: inherit;
   font-size: 0.875rem;
   font-weight: 700;
   line-height: 1;
   padding: 0.55rem 0.95rem;
+  text-decoration: none;
   transition:
     opacity 0.15s ease,
     transform 0.15s ease;
+}
+
+.runButton {
+  background: var(--theme-dark-blue);
+  color: #fff;
+}
+
+.inspectButton {
+  background: rgba(239, 246, 255, 0.82);
+  color: #35516d;
 }
 
 .runButton:hover {
   opacity: 0.92;
 }
 
+.inspectButton:hover {
+  opacity: 0.92;
+}
+
 .runButton:active {
   transform: translateY(1px);
+}
+
+.inspectButton:active {
+  transform: translateY(1px);
+}
+
+.editorPanelDark .inspectButton {
+  background: rgba(20, 28, 36, 0.9);
+  color: #b0c4d8;
+}
+
+.utilityButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(4, 96, 189, 0.22);
+  background: rgba(239, 246, 255, 0.82);
+  color: #35516d;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.utilityButton:hover {
+  background: #e7f1ff;
+}
+
+.editorPanelDark .utilityButton {
+  border-color: rgba(4, 96, 189, 0.22);
+  background: rgba(20, 28, 36, 0.9);
+  color: #b0c4d8;
+}
+
+.editorPanelDark .utilityButton:hover {
+  background: rgba(4, 96, 189, 0.14);
+}
+
+.buttonIcon {
+  font-size: 0.8125rem;
+}
+
+.copyError {
+  padding: 0.5rem 0.75rem 0;
+  color: #b42318;
+  font-size: 0.8125rem;
+  font-weight: 600;
 }
 
 .editorSurface {
@@ -99,6 +181,16 @@
   .workspace {
     grid-template-columns: 1fr;
     grid-template-rows: minmax(0, 1.2fr) minmax(0, 0.85fr);
+  }
+
+  .editorToolbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .toolbarActions {
+    width: 100%;
+    justify-content: flex-end;
   }
 
   .editorColumn {
