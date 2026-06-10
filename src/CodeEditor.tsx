@@ -25,11 +25,16 @@ interface CodeEditorProps {
 
 const themeCompartment = new Compartment();
 
-// Mobile virtual keyboards emit Enter as a paragraph insertion through
-// `beforeinput`, which was producing a doubled line break in CodeMirror here.
+// Mobile virtual keyboards emit Enter through `beforeinput`, but they do not
+// consistently use the same input type at line boundaries. Normalizing both
+// paths here keeps Enter to a single newline on mobile.
 const singleParagraphBreak = EditorView.domEventHandlers({
   beforeinput(event, view) {
-    if (!(event instanceof InputEvent) || event.inputType !== "insertParagraph") {
+    if (
+      !(event instanceof InputEvent) ||
+      (event.inputType !== "insertParagraph" &&
+        event.inputType !== "insertLineBreak")
+    ) {
       return false;
     }
 
