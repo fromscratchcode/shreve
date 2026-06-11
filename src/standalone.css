@@ -79,6 +79,28 @@ body {
   text-decoration: underline;
 }
 
+.standaloneUtilityActions {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.standaloneSupportLink {
+  color: #35516d;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.standaloneSupportLink:hover {
+  text-decoration: underline;
+}
+
+.standaloneShellDark .standaloneSupportLink {
+  color: #b0c4d8;
+}
+
 .themeToggle {
   display: inline-flex;
   align-items: center;
@@ -294,6 +316,18 @@ body {
 }
 
 @media (max-width: 720px) {
+  .standaloneLearnMore {
+    display: none;
+  }
+
+  .standaloneUtilityActions {
+    gap: 0.75rem;
+  }
+
+  .standaloneSupportLink {
+    font-size: 0.8125rem;
+  }
+
   .standaloneReplToggle {
     padding: 0.875rem 0.875rem 1rem;
   }

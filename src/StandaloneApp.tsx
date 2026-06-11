@@ -57,17 +57,25 @@ const StandaloneApp = () => {
             Learn more
           </a>
         </div>
-        <button
-          type="button"
-          className="themeToggle"
-          onClick={() => setDarkMode((current) => !current)}
-        >
-          <FontAwesomeIcon
-            icon={darkMode ? faSun : faMoon}
-            className="themeToggleIcon"
-            aria-hidden="true"
-          />
-        </button>
+        <div className="standaloneUtilityActions">
+          <a
+            className="standaloneSupportLink"
+            href="https://github.com/fromscratchcode/memphis/blob/main/docs/SUPPORTED.md"
+          >
+            What is supported?
+          </a>
+          <button
+            type="button"
+            className="themeToggle"
+            onClick={() => setDarkMode((current) => !current)}
+          >
+            <FontAwesomeIcon
+              icon={darkMode ? faSun : faMoon}
+              className="themeToggleIcon"
+              aria-hidden="true"
+            />
+          </button>
+        </div>
       </div>
       <div className="standaloneAppFrame">
         <div
