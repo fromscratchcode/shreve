@@ -140,7 +140,6 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
       </section>
       <section className="column consoleColumn">
         <div className="consolePanel">
-          <h2 className="consoleHeader">Console</h2>
           <Console output={consoleOutput} darkMode={darkMode} />
         </div>
       </section>

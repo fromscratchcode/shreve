@@ -169,14 +169,6 @@
   min-height: 0;
 }
 
-.consoleHeader {
-  margin: 0 0 0.625rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 @media (max-width: 960px) {
   .workspace {
     grid-template-columns: 1fr;
@@ -184,13 +176,7 @@
   }
 
   .editorToolbar {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .toolbarActions {
-    width: 100%;
-    justify-content: flex-end;
+    align-items: center;
   }
 
   .editorColumn {
