@@ -49,7 +49,7 @@ const StandaloneApp = () => {
     <div className={`standaloneShell ${darkMode ? "standaloneShellDark" : ""}`}>
       <div className="standaloneToolbar">
         <div className="standaloneBrand">
-          <h1 className="standaloneTitle">Shreve</h1>
+          <h1 className="standaloneTitle">Memphis Playground</h1>
           <a
             className="standaloneLearnMore"
             href="https://fromscratchcode.com/memphis/"
