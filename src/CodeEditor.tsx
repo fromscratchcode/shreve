@@ -6,6 +6,7 @@ import {
   syntaxHighlighting,
 } from "@codemirror/language";
 import { Compartment, EditorSelection, EditorState } from "@codemirror/state";
+import { oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import {
   drawSelection,
   EditorView,
@@ -25,12 +26,16 @@ interface CodeEditorProps {
 }
 
 const themeCompartment = new Compartment();
+const highlightCompartment = new Compartment();
 
 // Some consumers render this component during SSR/SSG before hydrating on the
 // client. CodeMirror still needs to attach before the first client paint, but
 // calling `useLayoutEffect` on the server triggers warnings and has no effect.
 const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+const createHighlightExtension = (darkMode: boolean) =>
+  syntaxHighlighting(darkMode ? oneDarkHighlightStyle : defaultHighlightStyle);
 
 // Mobile virtual keyboards emit Enter through `beforeinput`, but they do not
 // consistently use the same input type at line boundaries. Normalizing both
@@ -146,11 +151,11 @@ const CodeEditor = ({
         highlightActiveLine(),
         keymap.of([indentWithTab]),
         python(),
-        syntaxHighlighting(defaultHighlightStyle),
         EditorView.lineWrapping,
         singleParagraphBreak,
         placeholder("Enter Python code here"),
         themeCompartment.of(initialThemeRef.current),
+        highlightCompartment.of(createHighlightExtension(darkMode)),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             setCode(update.state.doc.toString());
@@ -180,7 +185,10 @@ const CodeEditor = ({
     }
 
     view.dispatch({
-      effects: themeCompartment.reconfigure(createTheme(darkMode, autoHeight)),
+      effects: [
+        themeCompartment.reconfigure(createTheme(darkMode, autoHeight)),
+        highlightCompartment.reconfigure(createHighlightExtension(darkMode)),
+      ],
     });
   }, [autoHeight, darkMode]);
 
