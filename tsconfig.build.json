@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "files": ["./src/globals.d.ts", "./src/index.ts"],
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "dist",
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "rootDir": "src"
+  },
+  "include": []
+}

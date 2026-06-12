@@ -21,6 +21,7 @@ interface CodeEditorProps {
   code: string;
   setCode: (code: string) => void;
   darkMode: boolean;
+  autoHeight?: boolean;
 }
 
 const themeCompartment = new Compartment();
@@ -53,11 +54,11 @@ const singleParagraphBreak = EditorView.domEventHandlers({
   },
 });
 
-const createTheme = (darkMode: boolean) =>
+const createTheme = (darkMode: boolean, autoHeight: boolean) =>
   EditorView.theme(
     {
       "&": {
-        height: "100%",
+        height: autoHeight ? "auto" : "100%",
         background: "transparent",
         color: darkMode ? "#0184a6" : "#000",
       },
@@ -116,10 +117,15 @@ const createTheme = (darkMode: boolean) =>
     { dark: darkMode },
   );
 
-const CodeEditor = ({ code, setCode, darkMode }: CodeEditorProps) => {
+const CodeEditor = ({
+  code,
+  setCode,
+  darkMode,
+  autoHeight = false,
+}: CodeEditorProps) => {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
-  const initialThemeRef = useRef(createTheme(darkMode));
+  const initialThemeRef = useRef(createTheme(darkMode, autoHeight));
 
   useEffect(() => {
     if (!editorRef.current) {
@@ -168,9 +174,9 @@ const CodeEditor = ({ code, setCode, darkMode }: CodeEditorProps) => {
     }
 
     view.dispatch({
-      effects: themeCompartment.reconfigure(createTheme(darkMode)),
+      effects: themeCompartment.reconfigure(createTheme(darkMode, autoHeight)),
     });
-  }, [darkMode]);
+  }, [autoHeight, darkMode]);
 
   useEffect(() => {
     const view = viewRef.current;
@@ -194,7 +200,12 @@ const CodeEditor = ({ code, setCode, darkMode }: CodeEditorProps) => {
     });
   }, [code]);
 
-  return <div ref={editorRef} className={styles.editor} />;
+  return (
+    <div
+      ref={editorRef}
+      className={`${styles.editor} ${autoHeight ? styles.autoHeight : ""}`}
+    />
+  );
 };
 
 export default CodeEditor;

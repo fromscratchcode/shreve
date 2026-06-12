@@ -10,8 +10,8 @@ import {
 import "./App.css";
 import CodeEditor from "./CodeEditor";
 import Console from "./Console";
-import { getMemphis, hasMemphis } from "./memphis";
 import { encodeCode, getCodeFromURL, setCodeInURL } from "./urlState";
+import { useMemphisRunner } from "./hooks/useMemphisRunner";
 
 const DEFAULT_CODE = `def greet(name):
     print(f"hello, {name}")
@@ -31,15 +31,10 @@ interface ScriptWorkspaceProps {
 type CopyState = "idle" | "copied" | "error";
 
 const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
-  const [code, setCode] = useState(getInitialCode);
-  const [consoleOutput, setConsoleOutput] = useState(
-    "Console output will appear here.",
-  );
+  const { code, setCode, consoleOutput, run } = useMemphisRunner({
+    initialCode: getInitialCode(),
+  });
   const [copyState, setCopyState] = useState<CopyState>("idle");
-
-  useEffect(() => {
-    void getMemphis();
-  }, []);
 
   useEffect(() => {
     setCodeInURL(code);
@@ -56,22 +51,6 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
 
     return () => window.clearTimeout(timeoutId);
   }, [copyState]);
-
-  const handleRun = async () => {
-    if (!hasMemphis()) {
-      setConsoleOutput("Initializing Memphis...");
-    }
-
-    try {
-      const memphis = await getMemphis();
-      const output = memphis.run(code);
-      setConsoleOutput(output || "Program completed with no output.");
-    } catch (error) {
-      setConsoleOutput(
-        error instanceof Error ? error.message : "Failed to run Memphis.",
-      );
-    }
-  };
 
   const handleCopyLink = async () => {
     try {
@@ -119,7 +98,7 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
               <button
                 type="button"
                 className="runButton"
-                onClick={() => void handleRun()}
+                onClick={() => void run()}
               >
                 <FontAwesomeIcon
                   icon={faPlay}

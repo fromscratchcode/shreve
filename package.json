@@ -1,15 +1,30 @@
 {
-  "name": "shreve",
-  "private": true,
+  "name": "@fromscratchcode/memphis-react",
+  "license": "MIT",
   "version": "0.0.0",
   "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./memphis-react.css": "./dist/memphis-react.css"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "dev": "vite",
     "build": "tsc -p tsconfig.json && vite build",
+    "build:lib": "vite build --mode lib && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "npm run build:lib"
   },
   "dependencies": {
     "@codemirror/commands": "^6.10.3",

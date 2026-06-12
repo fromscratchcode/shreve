@@ -1,0 +1,103 @@
+.inlineRunner {
+  --theme-dark-blue: #0460bd;
+  --console-bg: #fff;
+  --console-fg: #000;
+  --console-dark-bg: #202020;
+  --console-dark-fg: #d9e4ec;
+  --corner: 6px;
+  display: grid;
+  gap: 0.875rem;
+  width: min(100%, 56rem);
+}
+
+.editorPanel {
+  position: relative;
+  border: 1px solid var(--theme-dark-blue);
+  border-radius: var(--corner);
+  background: #fff;
+  color: #000;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(4, 96, 189, 0.08);
+}
+
+.runButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--theme-dark-blue);
+  border-radius: 999px;
+  background: var(--theme-dark-blue);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.45rem 0.75rem;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.runButton:hover {
+  opacity: 0.92;
+}
+
+.runButton:active {
+  transform: translateY(1px);
+}
+
+.buttonIcon {
+  font-size: 0.75rem;
+}
+
+.editorSurface {
+  min-height: 0;
+}
+
+.consolePanel {
+  display: flex;
+  min-height: 6.75rem;
+  animation: consoleReveal 180ms ease-out;
+  transform-origin: top;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.5rem;
+}
+
+.playgroundLink {
+  color: #35516d;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.playgroundLink:hover {
+  text-decoration: underline;
+}
+
+@keyframes consoleReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 720px) {
+  .runButton {
+    top: 0.45rem;
+    right: 0.45rem;
+  }
+}

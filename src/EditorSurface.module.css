@@ -18,3 +18,17 @@
 .editor :global(.cm-content) {
   tab-size: 4;
 }
+
+.autoHeight {
+  height: auto;
+  overflow: visible;
+}
+
+.autoHeight :global(.cm-editor) {
+  height: auto;
+}
+
+.autoHeight :global(.cm-scroller) {
+  height: auto;
+  min-height: 0;
+}
