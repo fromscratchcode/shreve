@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { indentWithTab } from "@codemirror/commands";
 import { python } from "@codemirror/lang-python";
 import {
@@ -25,6 +25,12 @@ interface CodeEditorProps {
 }
 
 const themeCompartment = new Compartment();
+
+// Some consumers render this component during SSR/SSG before hydrating on the
+// client. CodeMirror still needs to attach before the first client paint, but
+// calling `useLayoutEffect` on the server triggers warnings and has no effect.
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 // Mobile virtual keyboards emit Enter through `beforeinput`, but they do not
 // consistently use the same input type at line boundaries. Normalizing both
@@ -127,13 +133,13 @@ const CodeEditor = ({
   const viewRef = useRef<EditorView | null>(null);
   const initialThemeRef = useRef(createTheme(darkMode, autoHeight));
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!editorRef.current) {
       return undefined;
     }
 
     const startState = EditorState.create({
-      doc: "",
+      doc: code,
       extensions: [
         lineNumbers(),
         drawSelection(),
