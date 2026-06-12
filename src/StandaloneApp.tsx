@@ -63,7 +63,7 @@ const StandaloneApp = () => {
           >
             <span className="standalonePromptButtonText">Prompt</span>
             <FontAwesomeIcon
-              icon={replOpen ? faChevronDown : faChevronUp}
+              icon={replOpen ? faChevronUp : faChevronDown}
               className="standalonePromptButtonIcon"
               aria-hidden="true"
             />

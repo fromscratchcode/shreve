@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { indentWithTab } from "@codemirror/commands";
 import { python } from "@codemirror/lang-python";
 import {
@@ -27,6 +27,8 @@ interface CodeEditorProps {
 
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
+const wrappingCompartment = new Compartment();
+const mobileViewportQuery = "(max-width: 768px)";
 
 // Some consumers render this component during SSR/SSG before hydrating on the
 // client. CodeMirror still needs to attach before the first client paint, but
@@ -36,6 +38,14 @@ const useIsomorphicLayoutEffect =
 
 const createHighlightExtension = (darkMode: boolean) =>
   syntaxHighlighting(darkMode ? oneDarkHighlightStyle : defaultHighlightStyle);
+
+const getInitialLineWrapping = (): boolean =>
+  typeof window === "undefined"
+    ? true
+    : !window.matchMedia(mobileViewportQuery).matches;
+
+const createWrappingExtension = (lineWrapping: boolean) =>
+  lineWrapping ? EditorView.lineWrapping : [];
 
 // Mobile virtual keyboards emit Enter through `beforeinput`, but they do not
 // consistently use the same input type at line boundaries. Normalizing both
@@ -137,6 +147,23 @@ const CodeEditor = ({
   const editorRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
   const initialThemeRef = useRef(createTheme(darkMode, autoHeight));
+  const [lineWrapping, setLineWrapping] = useState(getInitialLineWrapping);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(mobileViewportQuery);
+    const syncLineWrapping = (matches: boolean) => setLineWrapping(!matches);
+
+    syncLineWrapping(mediaQuery.matches);
+
+    const handleChange = (event: MediaQueryListEvent) =>
+      syncLineWrapping(event.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
 
   useIsomorphicLayoutEffect(() => {
     if (!editorRef.current) {
@@ -151,7 +178,7 @@ const CodeEditor = ({
         highlightActiveLine(),
         keymap.of([indentWithTab]),
         python(),
-        EditorView.lineWrapping,
+        wrappingCompartment.of(createWrappingExtension(lineWrapping)),
         singleParagraphBreak,
         placeholder("Enter Python code here"),
         themeCompartment.of(initialThemeRef.current),
@@ -188,9 +215,10 @@ const CodeEditor = ({
       effects: [
         themeCompartment.reconfigure(createTheme(darkMode, autoHeight)),
         highlightCompartment.reconfigure(createHighlightExtension(darkMode)),
+        wrappingCompartment.reconfigure(createWrappingExtension(lineWrapping)),
       ],
     });
-  }, [autoHeight, darkMode]);
+  }, [autoHeight, darkMode, lineWrapping]);
 
   useEffect(() => {
     const view = viewRef.current;
