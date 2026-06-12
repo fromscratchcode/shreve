@@ -50,20 +50,24 @@ const StandaloneApp = () => {
       <div className="standaloneToolbar">
         <div className="standaloneBrand">
           <h1 className="standaloneTitle">Memphis Playground</h1>
-          <a
-            className="standaloneLearnMore"
-            href="https://fromscratchcode.com/memphis/"
-          >
-            Learn more
-          </a>
         </div>
         <div className="standaloneUtilityActions">
-          <a
-            className="standaloneSupportLink"
-            href="https://github.com/fromscratchcode/memphis/blob/main/docs/SUPPORTED.md"
+          <button
+            type="button"
+            className={`standalonePromptButton ${
+              replOpen ? "standalonePromptButtonActive" : ""
+            }`}
+            onClick={() => setReplOpen((current) => !current)}
+            aria-expanded={replOpen}
+            aria-controls="standalone-repl-content"
           >
-            What is supported?
-          </a>
+            <span className="standalonePromptButtonText">Prompt</span>
+            <FontAwesomeIcon
+              icon={replOpen ? faChevronDown : faChevronUp}
+              className="standalonePromptButtonIcon"
+              aria-hidden="true"
+            />
+          </button>
           <button
             type="button"
             className="themeToggle"
@@ -78,59 +82,46 @@ const StandaloneApp = () => {
         </div>
       </div>
       <div className="standaloneAppFrame">
-        <div
-          className={`standaloneWorkspaceShell ${
-            replOpen ? "standaloneWorkspaceShellReplOpen" : ""
-          }`}
-        >
+        <div className="standaloneWorkspaceShell">
           <div className="standalonePrimaryWorkspace">
             <ScriptWorkspace darkMode={darkMode} />
           </div>
-          <section
-            className={`standaloneReplPane ${
-              replOpen ? "standaloneReplPaneOpen" : "standaloneReplPaneClosed"
-            }`}
-            aria-label="Interactive Prompt"
-          >
-            <button
-              type="button"
-              className="standaloneReplToggle"
-              onClick={() => setReplOpen((current) => !current)}
-              aria-expanded={replOpen}
-              aria-controls="standalone-repl-content"
-            >
-              <span className="standaloneReplTitle">Interactive Prompt</span>
-              <span className="standaloneReplToggleLabel">
-                {replOpen ? "Minimize" : "Open"}
-              </span>
-              <FontAwesomeIcon
-                icon={replOpen ? faChevronDown : faChevronUp}
-                className="standaloneReplToggleIcon"
-                aria-hidden="true"
-              />
-            </button>
-            <div
-              id="standalone-repl-content"
-              className="standaloneReplContent"
-              hidden={!replOpen}
-            >
-              <div className="standaloneReplBody">
-                {hasOpenedRepl ? (
-                  <Suspense
-                    fallback={
-                      <div className="standaloneReplLoading">
-                        Loading interactive prompt...
-                      </div>
-                    }
-                  >
-                    <LazyTupelo className="standaloneTupelo" />
-                  </Suspense>
-                ) : null}
-              </div>
-            </div>
-          </section>
         </div>
+        <section
+          className={`standaloneReplPane ${
+            replOpen ? "standaloneReplPaneOpen" : "standaloneReplPaneClosed"
+          }`}
+          aria-label="Interactive Prompt"
+          aria-hidden={!replOpen}
+        >
+          <div id="standalone-repl-content" className="standaloneReplContent">
+            <div className="standaloneReplBody">
+              {hasOpenedRepl ? (
+                <Suspense
+                  fallback={
+                    <div className="standaloneReplLoading">
+                      Loading interactive prompt...
+                    </div>
+                  }
+                >
+                  <LazyTupelo className="standaloneTupelo" />
+                </Suspense>
+              ) : null}
+            </div>
+          </div>
+        </section>
       </div>
+      <footer className="standaloneFooter">
+        <a className="standaloneBuiltBy" href="https://fromscratchcode.com/">
+          Built by From Scratch Code
+        </a>
+        <a
+          className="standaloneSupportLink"
+          href="https://github.com/fromscratchcode/memphis/blob/main/docs/SUPPORTED.md"
+        >
+          What is supported?
+        </a>
+      </footer>
     </div>
   );
 };

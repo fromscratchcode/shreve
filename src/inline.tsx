@@ -56,7 +56,9 @@ const InlineApp = () => {
             type="button"
             className="themeToggle"
             onClick={() => setDarkMode((current) => !current)}
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={
+              darkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
             title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
             <FontAwesomeIcon
