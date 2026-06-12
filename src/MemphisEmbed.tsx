@@ -10,11 +10,17 @@ import styles from "./MemphisEmbed.module.css";
 
 export interface MemphisEmbedProps {
   initialCode: string;
+  darkMode?: boolean;
   className?: string;
   style?: CSSProperties;
 }
 
-const MemphisEmbed = ({ initialCode, className, style }: MemphisEmbedProps) => {
+const MemphisEmbed = ({
+  initialCode,
+  darkMode = false,
+  className,
+  style,
+}: MemphisEmbedProps) => {
   const { code, setCode, consoleOutput, run } = useMemphisRunner({
     initialCode,
   });
@@ -28,7 +34,13 @@ const MemphisEmbed = ({ initialCode, className, style }: MemphisEmbedProps) => {
 
   return (
     <section
-      className={[styles.inlineRunner, className].filter(Boolean).join(" ")}
+      className={[
+        styles.inlineRunner,
+        darkMode ? styles.inlineRunnerDark : "",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
       style={style}
     >
       <div className={styles.editorPanel}>
@@ -48,14 +60,14 @@ const MemphisEmbed = ({ initialCode, className, style }: MemphisEmbedProps) => {
           <CodeEditor
             code={code}
             setCode={setCode}
-            darkMode={false}
+            darkMode={darkMode}
             autoHeight
           />
         </div>
       </div>
       {hasRun && (
         <div className={styles.consolePanel}>
-          <Console output={consoleOutput} darkMode={false} />
+          <Console output={consoleOutput} darkMode={darkMode} />
         </div>
       )}
       <div className={styles.footer}>
