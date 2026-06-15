@@ -13,11 +13,18 @@ import Console from "./Console";
 import { encodeCode, getCodeFromURL, setCodeInURL } from "./urlState";
 import { useMemphisRunner } from "./hooks/useMemphisRunner";
 
-const DEFAULT_CODE = `def greet(name):
-    print(f"hello, {name}")
+const DEFAULT_CODE = `def word_count(text):
+    counts = {}
 
-greet("memphis")
-`;
+    for word in text.split():
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+
+    return counts
+
+print(word_count("rust python rust"))`
 
 const getInitialCode = (): string =>
   typeof window === "undefined"
