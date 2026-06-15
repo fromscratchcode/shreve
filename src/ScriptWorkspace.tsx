@@ -24,7 +24,7 @@ const DEFAULT_CODE = `def word_count(text):
 
     return counts
 
-print(word_count("rust python rust"))`
+print(word_count("rust python rust"))`;
 
 const getInitialCode = (): string =>
   typeof window === "undefined"
@@ -68,7 +68,7 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
     }
   };
 
-  const inspectURL = `https://fromscratchcode.com/ozark?code=${encodeCode(code)}`;
+  const inspectURL = `https://fromscratchcode.com/ozark?c=${encodeCode(code)}`;
 
   return (
     <div className="workspace">
