@@ -68,7 +68,7 @@ const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
     }
   };
 
-  const inspectURL = `https://fromscratchcode.com/ozark?c=${encodeCode(code)}`;
+  const inspectURL = `https://fromscratchcode.com/ozark?c=${encodeCode(code)}&cv=1`;
 
   return (
     <div className="workspace">

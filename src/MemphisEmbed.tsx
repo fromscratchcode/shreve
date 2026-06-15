@@ -25,7 +25,7 @@ const MemphisEmbed = ({
     initialCode,
   });
   const [hasRun, setHasRun] = useState(false);
-  const playgroundURL = `https://memphis.fromscratchcode.com?c=${encodeCode(code)}`;
+  const playgroundURL = `https://memphis.fromscratchcode.com?c=${encodeCode(code)}&cv=1`;
 
   const handleRun = async () => {
     setHasRun(true);
