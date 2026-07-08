@@ -73,6 +73,7 @@
 .consolePanel {
   display: flex;
   min-height: 6.75rem;
+  min-width: 0;
   animation: consoleReveal 180ms ease-out;
   transform-origin: top;
 }
