@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
-import { getMemphis, hasMemphis } from "../memphis";
+import { getMemphis } from "@fromscratchcode/memphis-js";
 
 interface UseMemphisRunnerOptions {
   initialCode: string;
@@ -20,13 +20,20 @@ export const useMemphisRunner = ({
 }: UseMemphisRunnerOptions): UseMemphisRunnerResult => {
   const [code, setCode] = useState(initialCode);
   const [consoleOutput, setConsoleOutput] = useState(initialConsoleOutput);
+  const isMemphisReadyRef = useRef(false);
 
   useEffect(() => {
-    void getMemphis();
+    void getMemphis()
+      .then(() => {
+        isMemphisReadyRef.current = true;
+      })
+      .catch(() => {
+        // Leave ref false so run still retries
+      });
   }, []);
 
   const run = async () => {
-    if (!hasMemphis()) {
+    if (!isMemphisReadyRef.current) {
       setConsoleOutput("Initializing Memphis...");
     }
 
