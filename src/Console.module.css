@@ -31,6 +31,8 @@
   white-space: pre;
   padding: 0.75rem 1rem;
   margin: 0;
+  /* Defer scrolling to consoleBox */
+  overflow: visible;
 }
 
 .darkMode .consoleOutput {

@@ -21,11 +21,20 @@ export const useMemphisRunner = ({
   const [code, setCode] = useState(initialCode);
   const [consoleOutput, setConsoleOutput] = useState(initialConsoleOutput);
   const workerRef = useRef<Worker | null>(null);
+  const workerFailureRef = useRef<string | null>(null);
   const latestRunIdRef = useRef(0);
 
   useEffect(() => {
     const worker = new MemphisWorker();
     workerRef.current = worker;
+
+    worker.onerror = (event) => {
+      console.error("Memphis worker failed.", event);
+
+      workerFailureRef.current = event.message
+        ? `Memphis worker failed: ${event.message}`
+        : "Memphis worker failed to load or execute.";
+    };
 
     worker.onmessage = (event) => {
       const message = event.data;
@@ -58,7 +67,15 @@ export const useMemphisRunner = ({
     const worker = workerRef.current;
 
     if (!worker) {
+      // This can only happen due to a developer error, `worker` should always be available here.
       throw new Error("Memphis worker is unavailable.");
+    }
+
+    // This can happen if the worker fails to load (invalid URL, etc).
+    const failure = workerFailureRef.current;
+    if (failure) {
+      setConsoleOutput(failure);
+      return;
     }
 
     const runId = ++latestRunIdRef.current;
