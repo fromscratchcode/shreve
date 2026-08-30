@@ -29,7 +29,7 @@ const MemphisEmbed = ({
 
   const handleRun = async () => {
     setHasRun(true);
-    await run();
+    run();
   };
 
   return (

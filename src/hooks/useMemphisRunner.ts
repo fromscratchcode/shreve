@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-import { getMemphis } from "@fromscratchcode/memphis-js";
+import MemphisWorker from "../workers/memphis.worker?worker";
 
 interface UseMemphisRunnerOptions {
   initialCode: string;
@@ -11,7 +11,7 @@ interface UseMemphisRunnerResult {
   code: string;
   setCode: (code: string) => void;
   consoleOutput: string;
-  run: () => Promise<void>;
+  run: () => void;
 }
 
 export const useMemphisRunner = ({
@@ -20,32 +20,55 @@ export const useMemphisRunner = ({
 }: UseMemphisRunnerOptions): UseMemphisRunnerResult => {
   const [code, setCode] = useState(initialCode);
   const [consoleOutput, setConsoleOutput] = useState(initialConsoleOutput);
-  const isMemphisReadyRef = useRef(false);
+  const workerRef = useRef<Worker | null>(null);
+  const latestRunIdRef = useRef(0);
 
   useEffect(() => {
-    void getMemphis()
-      .then(() => {
-        isMemphisReadyRef.current = true;
-      })
-      .catch(() => {
-        // Leave ref false so run still retries
-      });
+    const worker = new MemphisWorker();
+    workerRef.current = worker;
+
+    worker.onmessage = (event) => {
+      const message = event.data;
+
+      if (message.runId !== latestRunIdRef.current) return;
+
+      if (message.type === "stdout" || message.type === "stderr") {
+        setConsoleOutput((current) => current + message.chunk);
+        return;
+      }
+
+      if (message.type === "complete" && !message.hadOutput) {
+        setConsoleOutput("Program completed with no output.");
+        return;
+      }
+
+      if (message.type === "error") {
+        setConsoleOutput((current) => current + message.message);
+        return;
+      }
+    };
+
+    return () => {
+      worker.terminate();
+      workerRef.current = null;
+    };
   }, []);
 
-  const run = async () => {
-    if (!isMemphisReadyRef.current) {
-      setConsoleOutput("Initializing Memphis...");
+  const run = () => {
+    const worker = workerRef.current;
+
+    if (!worker) {
+      throw new Error("Memphis worker is unavailable.");
     }
 
-    try {
-      const memphis = await getMemphis();
-      const output = memphis.run(code);
-      setConsoleOutput(output || "Program completed with no output.");
-    } catch (error) {
-      setConsoleOutput(
-        error instanceof Error ? error.message : "Failed to run Memphis.",
-      );
-    }
+    const runId = ++latestRunIdRef.current;
+    setConsoleOutput("");
+
+    worker.postMessage({
+      type: "run",
+      runId,
+      code,
+    });
   };
 
   return {

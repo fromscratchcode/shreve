@@ -25,7 +25,7 @@ const Console = ({ output, darkMode = false }: ConsoleProps) => {
       ref={containerRef}
       className={`${styles.consoleBox} ${darkMode ? styles.darkMode : ""}`}
     >
-      <pre className={styles.consoleOutput}>{output || "Success!"}</pre>
+      <pre className={styles.consoleOutput}>{output}</pre>
     </div>
   );
 };
