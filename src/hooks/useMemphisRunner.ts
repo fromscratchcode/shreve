@@ -2,12 +2,7 @@ import { useEffect, useState, useRef } from "react";
 
 import MemphisWorker from "../workers/memphis.worker?worker";
 import type { WorkerResponse } from "../workers/memphis.worker";
-import {
-  INPUT_LENGTH_INDEX,
-  INPUT_STATE_INDEX,
-  InputState,
-  createInputViews,
-} from "../workers/memphis.worker";
+import { createInputResponder } from "../workers/input-channel";
 
 interface UseMemphisRunnerOptions {
   initialCode: string;
@@ -22,7 +17,6 @@ interface UseMemphisRunnerResult {
 }
 
 const MAX_INPUT_BYTES = 16 * 1024;
-const encoder = new TextEncoder();
 
 export const useMemphisRunner = ({
   initialCode,
@@ -38,33 +32,11 @@ export const useMemphisRunner = ({
     const worker = new MemphisWorker();
     workerRef.current = worker;
 
-    // First 8 bytes: two Int32s. Remaining bytes: UTF-8 input.
-    const inputBuffer = new SharedArrayBuffer(8 + MAX_INPUT_BYTES);
+    const input = createInputResponder(MAX_INPUT_BYTES);
     worker.postMessage({
       type: "init",
-      inputBuffer,
+      inputBuffer: input.buffer,
     });
-
-    const { control, bytes } = createInputViews(inputBuffer);
-
-    function respondToInput(value: string | null) {
-      if (value === null) {
-        Atomics.store(control, INPUT_STATE_INDEX, InputState.Eof);
-      } else {
-        const encoded = encoder.encode(value);
-
-        if (encoded.length > bytes.length) {
-          throw new Error("Input line is too long");
-        }
-
-        bytes.set(encoded);
-        Atomics.store(control, INPUT_LENGTH_INDEX, encoded.length);
-        Atomics.store(control, INPUT_STATE_INDEX, InputState.Ready);
-      }
-
-      // Notify only 1 worker
-      Atomics.notify(control, INPUT_STATE_INDEX, 1);
-    }
 
     worker.onerror = (event) => {
       console.error("Memphis worker failed.", event);
@@ -86,7 +58,7 @@ export const useMemphisRunner = ({
 
       if (message.type === "input_request") {
         const value = window.prompt(message.prompt);
-        respondToInput(value);
+        input.respond(value);
         return;
       }
 
