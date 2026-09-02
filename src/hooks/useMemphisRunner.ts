@@ -5,8 +5,7 @@ import type { WorkerResponse } from "../workers/memphis.worker";
 import {
   INPUT_LENGTH_INDEX,
   INPUT_STATE_INDEX,
-  INPUT_EOF,
-  INPUT_READY,
+  InputState,
   createInputViews,
 } from "../workers/memphis.worker";
 
@@ -50,7 +49,7 @@ export const useMemphisRunner = ({
 
     function respondToInput(value: string | null) {
       if (value === null) {
-        Atomics.store(control, INPUT_STATE_INDEX, INPUT_EOF);
+        Atomics.store(control, INPUT_STATE_INDEX, InputState.Eof);
       } else {
         const encoded = encoder.encode(value);
 
@@ -60,7 +59,7 @@ export const useMemphisRunner = ({
 
         bytes.set(encoded);
         Atomics.store(control, INPUT_LENGTH_INDEX, encoded.length);
-        Atomics.store(control, INPUT_STATE_INDEX, INPUT_READY);
+        Atomics.store(control, INPUT_STATE_INDEX, InputState.Ready);
       }
 
       // Notify only 1 worker

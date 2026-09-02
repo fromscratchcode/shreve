@@ -14,9 +14,11 @@ export type WorkerResponse =
 export const INPUT_STATE_INDEX = 0;
 export const INPUT_LENGTH_INDEX = 1;
 
-const INPUT_WAITING = 0;
-export const INPUT_READY = 1;
-export const INPUT_EOF = 2;
+export const InputState = {
+  Waiting: 0,
+  Ready: 1,
+  Eof: 2,
+} as const;
 
 const INPUT_CONTROL_WORDS = 2;
 const INPUT_CONTROL_BYTES = INPUT_CONTROL_WORDS * Int32Array.BYTES_PER_ELEMENT;
@@ -25,7 +27,7 @@ export function createInputViews(inputBuffer: SharedArrayBuffer) {
   return {
     control: new Int32Array(inputBuffer, 0, INPUT_CONTROL_WORDS),
     bytes: new Uint8Array(inputBuffer, INPUT_CONTROL_BYTES),
-  }
+  };
 }
 
 let inputBuffer: SharedArrayBuffer | undefined;
@@ -42,7 +44,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 
     onInput = (runId: number, prompt: string): string | null => {
       // Set this before posting, so the main thread cannot reply too early.
-      Atomics.store(control, INPUT_STATE_INDEX, INPUT_WAITING);
+      Atomics.store(control, INPUT_STATE_INDEX, InputState.Waiting);
       Atomics.store(control, INPUT_LENGTH_INDEX, 0);
 
       postMessage({
@@ -51,12 +53,12 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         prompt,
       } satisfies WorkerResponse);
 
-      // Blocks this Worker only—not the render thread.
-      Atomics.wait(control, INPUT_STATE_INDEX, INPUT_WAITING);
+      // Blocks the worker and wait for the render thread
+      Atomics.wait(control, INPUT_STATE_INDEX, InputState.Waiting);
 
       const state = Atomics.load(control, INPUT_STATE_INDEX);
 
-      if (state === INPUT_EOF) {
+      if (state === InputState.Waiting) {
         return null;
       }
 
