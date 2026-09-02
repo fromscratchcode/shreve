@@ -6,6 +6,12 @@ export default defineConfig(({ mode }) => ({
   plugins: [react()],
   base: mode === "lib" ? "./" : "/",
   publicDir: mode === "lib" ? false : undefined,
+  server: {
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+    },
+  },
   build:
     mode === "lib"
       ? {
