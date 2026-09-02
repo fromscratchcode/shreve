@@ -24,9 +24,6 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   }
 
   if (event.data.type !== "run") return;
-  if (!input) {
-    throw new Error("Worker was initialized without an input channel.");
-  }
   const { runId, code } = event.data;
 
   try {
@@ -51,6 +48,10 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         } satisfies WorkerResponse);
       },
       onInput: (prompt: string) => {
+        if (!input) {
+          throw new Error("Interactive input was not enabled.");
+        }
+
         input.beginRequest();
         postMessage({
           type: "input_request",

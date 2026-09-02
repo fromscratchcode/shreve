@@ -40,6 +40,7 @@ type CopyState = "idle" | "copied" | "error";
 const ScriptWorkspace = ({ darkMode }: ScriptWorkspaceProps) => {
   const { code, setCode, consoleOutput, run } = useMemphisRunner({
     initialCode: getInitialCode(),
+    enableInput: true,
   });
   const [copyState, setCopyState] = useState<CopyState>("idle");
 

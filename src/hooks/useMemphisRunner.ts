@@ -7,6 +7,7 @@ import { createInputResponder } from "../workers/input-channel";
 interface UseMemphisRunnerOptions {
   initialCode: string;
   initialConsoleOutput?: string;
+  enableInput?: boolean;
 }
 
 interface UseMemphisRunnerResult {
@@ -21,6 +22,7 @@ const MAX_INPUT_BYTES = 16 * 1024;
 export const useMemphisRunner = ({
   initialCode,
   initialConsoleOutput = "Console output will appear here.",
+  enableInput = false,
 }: UseMemphisRunnerOptions): UseMemphisRunnerResult => {
   const [code, setCode] = useState(initialCode);
   const [consoleOutput, setConsoleOutput] = useState(initialConsoleOutput);
@@ -32,11 +34,16 @@ export const useMemphisRunner = ({
     const worker = new MemphisWorker();
     workerRef.current = worker;
 
-    const input = createInputResponder(MAX_INPUT_BYTES);
-    worker.postMessage({
-      type: "init",
-      inputBuffer: input.buffer,
-    });
+    const input = enableInput
+      ? createInputResponder(MAX_INPUT_BYTES)
+      : undefined;
+
+    if (input) {
+      worker.postMessage({
+        type: "init",
+        inputBuffer: input.buffer,
+      });
+    }
 
     worker.onerror = (event) => {
       console.error("Memphis worker failed.", event);
@@ -57,6 +64,10 @@ export const useMemphisRunner = ({
       }
 
       if (message.type === "input_request") {
+        if (!input) {
+          return;
+        }
+
         const value = window.prompt(message.prompt);
         input.respond(value);
         return;
@@ -77,7 +88,7 @@ export const useMemphisRunner = ({
       worker.terminate();
       workerRef.current = null;
     };
-  }, []);
+  }, [enableInput]);
 
   const run = () => {
     const worker = workerRef.current;
