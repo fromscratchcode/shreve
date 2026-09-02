@@ -62,8 +62,12 @@ export function createInputWaiter(buffer: SharedArrayBuffer) {
 
       const state = Atomics.load(control, INPUT_STATE_INDEX);
 
-      if (state === InputState.Waiting) {
+      if (state === InputState.Eof) {
         return null;
+      }
+
+      if (state !== InputState.Ready) {
+        throw new Error("Input channel entered an unexpected state.");
       }
 
       const length = Atomics.load(control, INPUT_LENGTH_INDEX);
