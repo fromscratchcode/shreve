@@ -1,20 +1,30 @@
 import { getMemphis } from "@fromscratchcode/memphis-js";
+import { createInputWaiter } from "./input-channel";
 
-type RunRequest = { type: "run"; runId: number; code: string };
+type WorkerRequest =
+  | { type: "init"; inputBuffer: SharedArrayBuffer }
+  | { type: "run"; runId: number; code: string };
 
-type WorkerResponse =
+export type WorkerResponse =
   | { type: "stdout"; runId: number; chunk: string }
   | { type: "stderr"; runId: number; chunk: string }
+  | { type: "input_request"; runId: number; prompt: string }
   | { type: "complete"; runId: number; hadOutput: boolean }
   | { type: "error"; runId: number; message: string };
+
+let input: ReturnType<typeof createInputWaiter>;
 
 // Do an eager load, to hide the Wasm init time that we'd otherwise incur on the first run.
 const memphisPromise = getMemphis();
 
-self.onmessage = async (event: MessageEvent<RunRequest>) => {
-  const { type, runId, code } = event.data;
+self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
+  if (event.data.type === "init") {
+    input = createInputWaiter(event.data.inputBuffer);
+    return;
+  }
 
-  if (type !== "run") return;
+  if (event.data.type !== "run") return;
+  const { runId, code } = event.data;
 
   try {
     const memphis = await memphisPromise;
@@ -36,6 +46,19 @@ self.onmessage = async (event: MessageEvent<RunRequest>) => {
           runId,
           chunk,
         } satisfies WorkerResponse);
+      },
+      onInput: (prompt: string) => {
+        if (!input) {
+          throw new Error("Interactive input was not enabled.");
+        }
+
+        input.beginRequest();
+        postMessage({
+          type: "input_request",
+          runId,
+          prompt,
+        } satisfies WorkerResponse);
+        return input.waitForResponse();
       },
     });
 

@@ -1,0 +1,8 @@
+# SharedArrayBuffer powers interactive input in the Memphis worker. It requires a
+# cross-origin-isolated page; after deployment, verify `window.crossOriginIsolated`
+# is `true` in the browser console.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "require-corp"

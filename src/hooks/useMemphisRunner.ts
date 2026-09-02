@@ -1,10 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 
 import MemphisWorker from "../workers/memphis.worker?worker";
+import type { WorkerResponse } from "../workers/memphis.worker";
+import { createInputResponder } from "../workers/input-channel";
 
 interface UseMemphisRunnerOptions {
   initialCode: string;
   initialConsoleOutput?: string;
+  enableInput?: boolean;
 }
 
 interface UseMemphisRunnerResult {
@@ -14,9 +17,12 @@ interface UseMemphisRunnerResult {
   run: () => void;
 }
 
+const MAX_INPUT_BYTES = 16 * 1024;
+
 export const useMemphisRunner = ({
   initialCode,
   initialConsoleOutput = "Console output will appear here.",
+  enableInput = false,
 }: UseMemphisRunnerOptions): UseMemphisRunnerResult => {
   const [code, setCode] = useState(initialCode);
   const [consoleOutput, setConsoleOutput] = useState(initialConsoleOutput);
@@ -28,6 +34,17 @@ export const useMemphisRunner = ({
     const worker = new MemphisWorker();
     workerRef.current = worker;
 
+    const input = enableInput
+      ? createInputResponder(MAX_INPUT_BYTES)
+      : undefined;
+
+    if (input) {
+      worker.postMessage({
+        type: "init",
+        inputBuffer: input.buffer,
+      });
+    }
+
     worker.onerror = (event) => {
       console.error("Memphis worker failed.", event);
 
@@ -37,12 +54,22 @@ export const useMemphisRunner = ({
     };
 
     worker.onmessage = (event) => {
-      const message = event.data;
+      const message: WorkerResponse = event.data;
 
       if (message.runId !== latestRunIdRef.current) return;
 
       if (message.type === "stdout" || message.type === "stderr") {
         setConsoleOutput((current) => current + message.chunk);
+        return;
+      }
+
+      if (message.type === "input_request") {
+        if (!input) {
+          return;
+        }
+
+        const value = window.prompt(message.prompt);
+        input.respond(value);
         return;
       }
 
@@ -61,7 +88,7 @@ export const useMemphisRunner = ({
       worker.terminate();
       workerRef.current = null;
     };
-  }, []);
+  }, [enableInput]);
 
   const run = () => {
     const worker = workerRef.current;
